@@ -5,6 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Visibility
+import androidx.compose.material.icons.rounded.VisibilityOff
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -15,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,14 +70,11 @@ fun NameTextField() {
     var name by remember { mutableStateOf("") }
 
     DefaultTextField(
-        modifier = Modifier.fillMaxWidth(),
         value = name,
         onValueChange = {
             name = it
         },
-        placeholder = {
-            Placeholder(text = "Name")
-        },
+        placeholder = "Name",
     )
 }
 
@@ -80,56 +83,79 @@ fun EmailTextField() {
     var email by remember { mutableStateOf("") }
 
     DefaultTextField(
-        modifier = Modifier.fillMaxWidth(),
         value = email,
         onValueChange = {
             email = it
         },
-        placeholder = {
-            Placeholder(text = "Email")
-        },
+        placeholder = "Email",
     )
 }
 
 @Composable
 fun PasswordTextField() {
     var password by remember { mutableStateOf("") }
+    var passwordVisibility by remember { mutableStateOf(false) }
+    val visualTransformation = if (passwordVisibility) VisualTransformation.None
+    else PasswordVisualTransformation()
 
     DefaultTextField(
-        modifier = Modifier.fillMaxWidth(),
         value = password,
         onValueChange = {
             password = it
         },
-        placeholder = {
-            Placeholder(text = "Password")
+        placeholder = "Password",
+        visualTransformation = visualTransformation,
+        trailingIcon = {
+            IconButton(
+                onClick = {
+                    passwordVisibility = !passwordVisibility
+                },
+            ) {
+                val icon = if (passwordVisibility) Icons.Rounded.VisibilityOff
+                else Icons.Rounded.Visibility
+                val contentDescription = if (passwordVisibility) "Hide password"
+                else "Show password"
+
+                Icon(
+                    imageVector = icon,
+                    contentDescription = contentDescription,
+                )
+            }
         },
-        visualTransformation = PasswordVisualTransformation(),
     )
 }
 
 @Composable
 fun ConfirmPasswordTextField() {
     var confirmPassword by remember { mutableStateOf("") }
+    var confirmPasswordVisibility by remember { mutableStateOf(false) }
+    val visualTransformation = if (confirmPasswordVisibility) VisualTransformation.None
+    else PasswordVisualTransformation()
 
     DefaultTextField(
-        modifier = Modifier.fillMaxWidth(),
         value = confirmPassword,
         onValueChange = {
             confirmPassword = it
         },
-        placeholder = {
-            Placeholder(text = "Confirm Password")
-        },
-        visualTransformation = PasswordVisualTransformation(),
-    )
-}
+        placeholder = "Confirm Password",
+        visualTransformation = visualTransformation,
+        trailingIcon = {
+            IconButton(
+                onClick = {
+                    confirmPasswordVisibility = !confirmPasswordVisibility
+                },
+            ) {
+                val icon = if (confirmPasswordVisibility) Icons.Rounded.VisibilityOff
+                else Icons.Rounded.Visibility
+                val contentDescription = if (confirmPasswordVisibility) "Hide confirm password"
+                else "Show confirm password"
 
-@Composable
-fun Placeholder(text: String) {
-    Text(
-        text = text,
-        fontSize = 16.sp,
+                Icon(
+                    imageVector = icon,
+                    contentDescription = contentDescription,
+                )
+            }
+        },
     )
 }
 
@@ -147,7 +173,7 @@ fun RedirectToSignIn(navController: NavController?) {
     TextButton(
         modifier = Modifier.fillMaxWidth(),
         onClick = {
-            navController?.navigate("sign-in")
+            navController?.popBackStack()
         },
     ) {
         Text(
