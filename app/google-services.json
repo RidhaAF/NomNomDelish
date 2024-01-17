@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "902427919645",
+    "project_id": "nom-nom-dish",
+    "storage_bucket": "nom-nom-dish.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902427919645:android:fc52a6826d1594a6d38df4",
+        "android_client_info": {
+          "package_name": "com.ridhaaf.nomnomdelish"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "902427919645-hv8mhjfh6ogv703isc3jio858cd2bdna.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ridhaaf.nomnomdelish",
+            "certificate_hash": "6dfd858bd0e5fe4fad71083486f3fee5e499b88a"
+          }
+        },
+        {
+          "client_id": "902427919645-j7sfhg6pruu1l5tddid6nnputrgljcu9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUbiX9Ou0JtREgFNn33hEh4VRrQ-NA5dY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "902427919645-j7sfhg6pruu1l5tddid6nnputrgljcu9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

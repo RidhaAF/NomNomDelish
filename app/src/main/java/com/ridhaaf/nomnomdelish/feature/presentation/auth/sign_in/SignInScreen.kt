@@ -1,4 +1,4 @@
-package com.ridhaaf.nomnomdelish.features.presentation.auth.sign_in
+package com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_in
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,9 +25,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultButton
-import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultSpacer
-import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultTextField
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultButton
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultSpacer
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultTextField
 
 @Composable
 fun SignInScreen(

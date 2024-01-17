@@ -1,4 +1,4 @@
-package com.ridhaaf.nomnomdelish.features.presentation.routes
+package com.ridhaaf.nomnomdelish.feature.presentation.routes
 
 object Routes {
     const val SIGN_IN = "sign-in"

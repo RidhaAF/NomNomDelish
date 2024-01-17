@@ -1,4 +1,4 @@
-package com.ridhaaf.nomnomdelish.features.presentation.auth.sign_up
+package com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_up
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -24,14 +25,16 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultButton
-import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultSpacer
-import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultTextField
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultButton
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultSpacer
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultTextField
 
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
+    viewModel: SignUpViewModel = hiltViewModel(),
     navController: NavController? = null,
 ) {
     Column(
@@ -40,7 +43,7 @@ fun SignUpScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
     ) {
-        Title()
+        Title("Sign Up")
         DefaultSpacer()
         NameTextField()
         DefaultSpacer()
@@ -50,16 +53,16 @@ fun SignUpScreen(
         DefaultSpacer()
         ConfirmPasswordTextField()
         DefaultSpacer()
-        SignUpButton()
+        SignUpButton(viewModel = viewModel)
         DefaultSpacer()
         RedirectToSignIn(navController)
     }
 }
 
 @Composable
-fun Title() {
+fun Title(title: String) {
     Text(
-        text = "Sign Up",
+        text = title,
         fontSize = 24.sp,
         fontWeight = FontWeight.SemiBold,
     )
@@ -80,7 +83,7 @@ fun NameTextField() {
 
 @Composable
 fun EmailTextField() {
-    var email by remember { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
 
     DefaultTextField(
         value = email,
@@ -160,7 +163,7 @@ fun ConfirmPasswordTextField() {
 }
 
 @Composable
-fun SignUpButton() {
+fun SignUpButton(viewModel: SignUpViewModel) {
     DefaultButton(
         modifier = Modifier.fillMaxWidth(),
         onClick = {},
