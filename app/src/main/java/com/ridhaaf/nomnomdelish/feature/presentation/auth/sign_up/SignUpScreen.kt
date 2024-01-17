@@ -15,7 +15,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -37,6 +36,8 @@ fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel(),
     navController: NavController? = null,
 ) {
+    val state = viewModel.state.value
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -45,15 +46,18 @@ fun SignUpScreen(
     ) {
         Title("Sign Up")
         DefaultSpacer()
-        NameTextField()
+        NameTextField(viewModel)
         DefaultSpacer()
-        EmailTextField()
+        EmailTextField(viewModel)
         DefaultSpacer()
-        PasswordTextField()
+        PasswordTextField(viewModel)
         DefaultSpacer()
-        ConfirmPasswordTextField()
+        ConfirmPasswordTextField(viewModel)
         DefaultSpacer()
-        SignUpButton(viewModel = viewModel)
+        SignUpButton(
+            viewModel = viewModel,
+            state = state,
+        )
         DefaultSpacer()
         RedirectToSignIn(navController)
     }
@@ -69,42 +73,37 @@ fun Title(title: String) {
 }
 
 @Composable
-fun NameTextField() {
-    var name by remember { mutableStateOf("") }
-
+fun NameTextField(viewModel: SignUpViewModel) {
     DefaultTextField(
-        value = name,
+        value = viewModel.name,
         onValueChange = {
-            name = it
+            viewModel.onEvent(SignUpEvent.OnNameChange(it))
         },
         placeholder = "Name",
     )
 }
 
 @Composable
-fun EmailTextField() {
-    var email by rememberSaveable { mutableStateOf("") }
-
+fun EmailTextField(viewModel: SignUpViewModel) {
     DefaultTextField(
-        value = email,
+        value = viewModel.email,
         onValueChange = {
-            email = it
+            viewModel.onEvent(SignUpEvent.OnEmailChange(it))
         },
         placeholder = "Email",
     )
 }
 
 @Composable
-fun PasswordTextField() {
-    var password by remember { mutableStateOf("") }
-    var passwordVisibility by remember { mutableStateOf(false) }
+fun PasswordTextField(viewModel: SignUpViewModel) {
+    var passwordVisibility by rememberSaveable { mutableStateOf(false) }
     val visualTransformation = if (passwordVisibility) VisualTransformation.None
     else PasswordVisualTransformation()
 
     DefaultTextField(
-        value = password,
+        value = viewModel.password,
         onValueChange = {
-            password = it
+            viewModel.onEvent(SignUpEvent.OnPasswordChange(it))
         },
         placeholder = "Password",
         visualTransformation = visualTransformation,
@@ -129,16 +128,15 @@ fun PasswordTextField() {
 }
 
 @Composable
-fun ConfirmPasswordTextField() {
-    var confirmPassword by remember { mutableStateOf("") }
-    var confirmPasswordVisibility by remember { mutableStateOf(false) }
+fun ConfirmPasswordTextField(viewModel: SignUpViewModel) {
+    var confirmPasswordVisibility by rememberSaveable { mutableStateOf(false) }
     val visualTransformation = if (confirmPasswordVisibility) VisualTransformation.None
     else PasswordVisualTransformation()
 
     DefaultTextField(
-        value = confirmPassword,
+        value = viewModel.confirmPassword,
         onValueChange = {
-            confirmPassword = it
+            viewModel.onEvent(SignUpEvent.OnConfirmPasswordChange(it))
         },
         placeholder = "Confirm Password",
         visualTransformation = visualTransformation,
@@ -163,11 +161,15 @@ fun ConfirmPasswordTextField() {
 }
 
 @Composable
-fun SignUpButton(viewModel: SignUpViewModel) {
+fun SignUpButton(viewModel: SignUpViewModel, state: SignUpState) {
+    val text = if (state.isLoading) "Loading..." else "Sign Up"
+
     DefaultButton(
         modifier = Modifier.fillMaxWidth(),
-        onClick = {},
-        text = "Sign Up",
+        onClick = {
+            viewModel.onEvent(SignUpEvent.OnSignUpClick)
+        },
+        text = text,
     )
 }
 

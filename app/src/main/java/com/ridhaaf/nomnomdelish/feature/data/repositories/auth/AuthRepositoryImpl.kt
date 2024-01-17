@@ -1,6 +1,5 @@
 package com.ridhaaf.nomnomdelish.feature.data.repositories.auth
 
-import android.util.Log
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,11 +21,8 @@ class AuthRepositoryImpl(
     ): Flow<Resource<AuthResult>> = flow {
         emit(Resource.Loading())
 
-        Log.d("AuthRepositoryImpl", "signUp: $name, $email, $password")
-
         try {
             val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-            Log.d("AuthRepositoryImpl", "signUp: $result")
 
             val user = hashMapOf(
                 "name" to name,
