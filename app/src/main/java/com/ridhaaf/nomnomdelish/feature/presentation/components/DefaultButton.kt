@@ -1,4 +1,4 @@
-package com.ridhaaf.nomnomdelish.features.presentation.components
+package com.ridhaaf.nomnomdelish.feature.presentation.components
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text

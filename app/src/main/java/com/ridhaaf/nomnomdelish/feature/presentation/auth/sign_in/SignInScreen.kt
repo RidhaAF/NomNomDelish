@@ -1,4 +1,4 @@
-package com.ridhaaf.nomnomdelish.features.presentation.auth.sign_in
+package com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_in
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,79 +15,79 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultButton
-import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultSpacer
-import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultTextField
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultButton
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultSpacer
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultTextField
 
 @Composable
 fun SignInScreen(
     modifier: Modifier = Modifier,
+    viewModel: SignInViewModel = hiltViewModel(),
     navController: NavController? = null,
 ) {
+    val state = viewModel.state.value
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
     ) {
-        Title()
+        Title("Sign In")
         DefaultSpacer()
-        EmailTextField()
+        EmailTextField(viewModel)
         DefaultSpacer()
-        PasswordTextField()
+        PasswordTextField(viewModel)
         DefaultSpacer()
-        SignInButton()
+        SignInButton(
+            viewModel = viewModel,
+            state = state,
+        )
         DefaultSpacer()
         RedirectToSignUp(navController)
     }
 }
 
 @Composable
-fun Title() {
+fun Title(title: String) {
     Text(
-        text = "Sign In",
+        text = title,
         fontSize = 24.sp,
         fontWeight = FontWeight.SemiBold,
     )
 }
 
 @Composable
-fun EmailTextField() {
-    var email by remember { mutableStateOf("") }
-
+fun EmailTextField(viewModel: SignInViewModel) {
     DefaultTextField(
-        value = email,
+        value = viewModel.email,
         onValueChange = {
-            email = it
+            viewModel.onEvent(SignInEvent.OnEmailChange(it))
         },
         placeholder = "Email",
     )
 }
 
 @Composable
-fun PasswordTextField() {
-    var password by remember { mutableStateOf("") }
-    var passwordVisibility by remember { mutableStateOf(false) }
-    val visualTransformation = if (passwordVisibility) VisualTransformation.None
-    else PasswordVisualTransformation()
+fun PasswordTextField(viewModel: SignInViewModel) {
+    var passwordVisibility by rememberSaveable { mutableStateOf(false) }
 
     DefaultTextField(
-        value = password,
+        value = viewModel.password,
         onValueChange = {
-            password = it
+            viewModel.onEvent(SignInEvent.OnPasswordChange(it))
         },
         placeholder = "Password",
-        visualTransformation = visualTransformation,
+        isObscure = !passwordVisibility,
         trailingIcon = {
             IconButton(
                 onClick = {
@@ -109,11 +109,15 @@ fun PasswordTextField() {
 }
 
 @Composable
-fun SignInButton() {
+fun SignInButton(viewModel: SignInViewModel, state: SignInState) {
+    val text = if (state.isLoading) "Signing In..." else "Sign In"
+
     DefaultButton(
         modifier = Modifier.fillMaxWidth(),
-        onClick = {},
-        text = "Sign In",
+        onClick = {
+            viewModel.onEvent(SignInEvent.OnSignInClick)
+        },
+        text = text,
     )
 }
 

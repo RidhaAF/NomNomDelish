@@ -12,11 +12,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.ridhaaf.nomnomdelish.features.presentation.auth.sign_in.SignInScreen
-import com.ridhaaf.nomnomdelish.features.presentation.auth.sign_up.SignUpScreen
-import com.ridhaaf.nomnomdelish.features.presentation.routes.Routes
+import com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_in.SignInScreen
+import com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_up.SignUpScreen
+import com.ridhaaf.nomnomdelish.feature.presentation.routes.Routes
 import com.ridhaaf.nomnomdelish.ui.theme.NomNomDelishTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
