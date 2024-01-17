@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultButton
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultSpacer
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultTextField
+import java.util.Locale
 
 @Composable
 fun SignUpScreen(
@@ -93,15 +94,17 @@ fun EmailTextField(viewModel: SignUpViewModel) {
 }
 
 @Composable
-fun PasswordTextField(viewModel: SignUpViewModel) {
+fun PasswordTextFieldContent(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+) {
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
 
     DefaultTextField(
-        value = viewModel.password,
-        onValueChange = {
-            viewModel.onEvent(SignUpEvent.OnPasswordChange(it))
-        },
-        placeholder = "Password",
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = placeholder,
         isObscure = !passwordVisibility,
         trailingIcon = {
             IconButton(
@@ -111,8 +114,9 @@ fun PasswordTextField(viewModel: SignUpViewModel) {
             ) {
                 val icon = if (passwordVisibility) Icons.Rounded.VisibilityOff
                 else Icons.Rounded.Visibility
-                val contentDescription = if (passwordVisibility) "Hide password"
-                else "Show password"
+                val contentDescription =
+                    if (passwordVisibility) "Hide ${placeholder.lowercase(Locale.getDefault())}"
+                    else "Show ${placeholder.lowercase(Locale.getDefault())}"
 
                 Icon(
                     imageVector = icon,
@@ -124,33 +128,24 @@ fun PasswordTextField(viewModel: SignUpViewModel) {
 }
 
 @Composable
-fun ConfirmPasswordTextField(viewModel: SignUpViewModel) {
-    var confirmPasswordVisibility by rememberSaveable { mutableStateOf(false) }
+fun PasswordTextField(viewModel: SignUpViewModel) {
+    PasswordTextFieldContent(
+        value = viewModel.password,
+        onValueChange = {
+            viewModel.onEvent(SignUpEvent.OnPasswordChange(it))
+        },
+        placeholder = "Password",
+    )
+}
 
-    DefaultTextField(
+@Composable
+fun ConfirmPasswordTextField(viewModel: SignUpViewModel) {
+    PasswordTextFieldContent(
         value = viewModel.confirmPassword,
         onValueChange = {
             viewModel.onEvent(SignUpEvent.OnConfirmPasswordChange(it))
         },
         placeholder = "Confirm Password",
-        isObscure = !confirmPasswordVisibility,
-        trailingIcon = {
-            IconButton(
-                onClick = {
-                    confirmPasswordVisibility = !confirmPasswordVisibility
-                },
-            ) {
-                val icon = if (confirmPasswordVisibility) Icons.Rounded.VisibilityOff
-                else Icons.Rounded.Visibility
-                val contentDescription = if (confirmPasswordVisibility) "Hide confirm password"
-                else "Show confirm password"
-
-                Icon(
-                    imageVector = icon,
-                    contentDescription = contentDescription,
-                )
-            }
-        },
     )
 }
 
