@@ -1,4 +1,4 @@
-package com.ridhaaf.nomnomdelish.features.presentation.auth.sign_up
+package com.ridhaaf.nomnomdelish.features.presentation.auth.sign_in
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +24,7 @@ import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultSpacer
 import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultTextField
 
 @Composable
-fun SignUpScreen(
+fun SignInScreen(
     modifier: Modifier = Modifier,
     navController: NavController? = null,
 ) {
@@ -36,42 +36,22 @@ fun SignUpScreen(
     ) {
         Title()
         DefaultSpacer()
-        NameTextField()
-        DefaultSpacer()
         EmailTextField()
         DefaultSpacer()
         PasswordTextField()
         DefaultSpacer()
-        ConfirmPasswordTextField()
+        SignInButton()
         DefaultSpacer()
-        SignUpButton()
-        DefaultSpacer()
-        RedirectToSignIn(navController)
+        RedirectToSignUp(navController)
     }
 }
 
 @Composable
 fun Title() {
     Text(
-        text = "Sign Up",
+        text = "Sign In",
         fontSize = 24.sp,
         fontWeight = FontWeight.SemiBold,
-    )
-}
-
-@Composable
-fun NameTextField() {
-    var name by remember { mutableStateOf("") }
-
-    DefaultTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = name,
-        onValueChange = {
-            name = it
-        },
-        placeholder = {
-            Placeholder(text = "Name")
-        },
     )
 }
 
@@ -109,23 +89,6 @@ fun PasswordTextField() {
 }
 
 @Composable
-fun ConfirmPasswordTextField() {
-    var confirmPassword by remember { mutableStateOf("") }
-
-    DefaultTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = confirmPassword,
-        onValueChange = {
-            confirmPassword = it
-        },
-        placeholder = {
-            Placeholder(text = "Confirm Password")
-        },
-        visualTransformation = PasswordVisualTransformation(),
-    )
-}
-
-@Composable
 fun Placeholder(text: String) {
     Text(
         text = text,
@@ -134,30 +97,30 @@ fun Placeholder(text: String) {
 }
 
 @Composable
-fun SignUpButton() {
+fun SignInButton() {
     DefaultButton(
         modifier = Modifier.fillMaxWidth(),
         onClick = {},
-        text = "Sign Up",
+        text = "Sign In",
     )
 }
 
 @Composable
-fun RedirectToSignIn(navController: NavController?) {
+fun RedirectToSignUp(navController: NavController?) {
     TextButton(
         modifier = Modifier.fillMaxWidth(),
         onClick = {
-            navController?.navigate("sign-in")
+            navController?.navigate("sign-up")
         },
     ) {
         Text(
-            text = "Already have an account? Sign In",
+            text = "Don't have an account? Sign Up",
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun SignUpScreenPreview() {
-    SignUpScreen()
+fun SignInScreenPreview() {
+    SignInScreen()
 }

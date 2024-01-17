@@ -9,7 +9,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.ridhaaf.nomnomdelish.features.presentation.auth.sign_in.SignInScreen
 import com.ridhaaf.nomnomdelish.features.presentation.auth.sign_up.SignUpScreen
+import com.ridhaaf.nomnomdelish.features.presentation.routes.Routes
 import com.ridhaaf.nomnomdelish.ui.theme.NomNomDelishTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,7 +35,25 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App(modifier: Modifier = Modifier) {
-    SignUpScreen(modifier = modifier)
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = Routes.SIGN_IN,
+    ) {
+        composable(Routes.SIGN_IN) {
+            SignInScreen(
+                modifier = modifier,
+                navController = navController,
+            )
+        }
+        composable(Routes.SIGN_UP) {
+            SignUpScreen(
+                modifier = modifier,
+                navController = navController,
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
