@@ -162,7 +162,7 @@ fun ConfirmPasswordTextField(viewModel: SignUpViewModel) {
 
 @Composable
 fun SignUpButton(viewModel: SignUpViewModel, state: SignUpState) {
-    val text = if (state.isLoading) "Loading..." else "Sign Up"
+    val text = if (state.isLoading) "Signing Up..." else "Sign Up"
 
     DefaultButton(
         modifier = Modifier.fillMaxWidth(),
