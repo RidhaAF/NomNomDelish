@@ -8,6 +8,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
@@ -17,7 +18,7 @@ fun DefaultTextField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
+    isObscure: Boolean = false,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     TextField(
@@ -25,7 +26,7 @@ fun DefaultTextField(
         value = value,
         onValueChange = onValueChange,
         placeholder = { Text(text = placeholder) },
-        visualTransformation = visualTransformation,
+        visualTransformation = if (isObscure) PasswordVisualTransformation() else VisualTransformation.None,
         trailingIcon = trailingIcon,
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.colors(

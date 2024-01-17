@@ -19,8 +19,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -97,8 +95,6 @@ fun EmailTextField(viewModel: SignUpViewModel) {
 @Composable
 fun PasswordTextField(viewModel: SignUpViewModel) {
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
-    val visualTransformation = if (passwordVisibility) VisualTransformation.None
-    else PasswordVisualTransformation()
 
     DefaultTextField(
         value = viewModel.password,
@@ -106,7 +102,7 @@ fun PasswordTextField(viewModel: SignUpViewModel) {
             viewModel.onEvent(SignUpEvent.OnPasswordChange(it))
         },
         placeholder = "Password",
-        visualTransformation = visualTransformation,
+        isObscure = !passwordVisibility,
         trailingIcon = {
             IconButton(
                 onClick = {
@@ -130,8 +126,6 @@ fun PasswordTextField(viewModel: SignUpViewModel) {
 @Composable
 fun ConfirmPasswordTextField(viewModel: SignUpViewModel) {
     var confirmPasswordVisibility by rememberSaveable { mutableStateOf(false) }
-    val visualTransformation = if (confirmPasswordVisibility) VisualTransformation.None
-    else PasswordVisualTransformation()
 
     DefaultTextField(
         value = viewModel.confirmPassword,
@@ -139,7 +133,7 @@ fun ConfirmPasswordTextField(viewModel: SignUpViewModel) {
             viewModel.onEvent(SignUpEvent.OnConfirmPasswordChange(it))
         },
         placeholder = "Confirm Password",
-        visualTransformation = visualTransformation,
+        isObscure = !confirmPasswordVisibility,
         trailingIcon = {
             IconButton(
                 onClick = {
