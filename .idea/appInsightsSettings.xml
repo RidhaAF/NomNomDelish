@@ -27,10 +27,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.ridhaaf.nomnomdelish" />
+                  <option name="mobileSdkAppId" value="1:902427919645:android:fc52a6826d1594a6d38df4" />
+                  <option name="projectId" value="nom-nom-dish" />
+                  <option name="projectNumber" value="902427919645" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

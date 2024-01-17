@@ -1,4 +1,4 @@
-package com.ridhaaf.nomnomdelish.features.presentation.auth.sign_up
+package com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_up
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,96 +15,97 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultButton
-import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultSpacer
-import com.ridhaaf.nomnomdelish.features.presentation.components.DefaultTextField
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultButton
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultSpacer
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultTextField
+import java.util.Locale
 
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
+    viewModel: SignUpViewModel = hiltViewModel(),
     navController: NavController? = null,
 ) {
+    val state = viewModel.state.value
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
     ) {
-        Title()
+        Title("Sign Up")
         DefaultSpacer()
-        NameTextField()
+        NameTextField(viewModel)
         DefaultSpacer()
-        EmailTextField()
+        EmailTextField(viewModel)
         DefaultSpacer()
-        PasswordTextField()
+        PasswordTextField(viewModel)
         DefaultSpacer()
-        ConfirmPasswordTextField()
+        ConfirmPasswordTextField(viewModel)
         DefaultSpacer()
-        SignUpButton()
+        SignUpButton(
+            viewModel = viewModel,
+            state = state,
+        )
         DefaultSpacer()
         RedirectToSignIn(navController)
     }
 }
 
 @Composable
-fun Title() {
+fun Title(title: String) {
     Text(
-        text = "Sign Up",
+        text = title,
         fontSize = 24.sp,
         fontWeight = FontWeight.SemiBold,
     )
 }
 
 @Composable
-fun NameTextField() {
-    var name by remember { mutableStateOf("") }
-
+fun NameTextField(viewModel: SignUpViewModel) {
     DefaultTextField(
-        value = name,
+        value = viewModel.name,
         onValueChange = {
-            name = it
+            viewModel.onEvent(SignUpEvent.OnNameChange(it))
         },
         placeholder = "Name",
     )
 }
 
 @Composable
-fun EmailTextField() {
-    var email by remember { mutableStateOf("") }
-
+fun EmailTextField(viewModel: SignUpViewModel) {
     DefaultTextField(
-        value = email,
+        value = viewModel.email,
         onValueChange = {
-            email = it
+            viewModel.onEvent(SignUpEvent.OnEmailChange(it))
         },
         placeholder = "Email",
     )
 }
 
 @Composable
-fun PasswordTextField() {
-    var password by remember { mutableStateOf("") }
-    var passwordVisibility by remember { mutableStateOf(false) }
-    val visualTransformation = if (passwordVisibility) VisualTransformation.None
-    else PasswordVisualTransformation()
+fun PasswordTextFieldContent(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+) {
+    var passwordVisibility by rememberSaveable { mutableStateOf(false) }
 
     DefaultTextField(
-        value = password,
-        onValueChange = {
-            password = it
-        },
-        placeholder = "Password",
-        visualTransformation = visualTransformation,
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = placeholder,
+        isObscure = !passwordVisibility,
         trailingIcon = {
             IconButton(
                 onClick = {
@@ -113,8 +114,9 @@ fun PasswordTextField() {
             ) {
                 val icon = if (passwordVisibility) Icons.Rounded.VisibilityOff
                 else Icons.Rounded.Visibility
-                val contentDescription = if (passwordVisibility) "Hide password"
-                else "Show password"
+                val contentDescription =
+                    if (passwordVisibility) "Hide ${placeholder.lowercase(Locale.getDefault())}"
+                    else "Show ${placeholder.lowercase(Locale.getDefault())}"
 
                 Icon(
                     imageVector = icon,
@@ -126,45 +128,37 @@ fun PasswordTextField() {
 }
 
 @Composable
-fun ConfirmPasswordTextField() {
-    var confirmPassword by remember { mutableStateOf("") }
-    var confirmPasswordVisibility by remember { mutableStateOf(false) }
-    val visualTransformation = if (confirmPasswordVisibility) VisualTransformation.None
-    else PasswordVisualTransformation()
-
-    DefaultTextField(
-        value = confirmPassword,
+fun PasswordTextField(viewModel: SignUpViewModel) {
+    PasswordTextFieldContent(
+        value = viewModel.password,
         onValueChange = {
-            confirmPassword = it
+            viewModel.onEvent(SignUpEvent.OnPasswordChange(it))
+        },
+        placeholder = "Password",
+    )
+}
+
+@Composable
+fun ConfirmPasswordTextField(viewModel: SignUpViewModel) {
+    PasswordTextFieldContent(
+        value = viewModel.confirmPassword,
+        onValueChange = {
+            viewModel.onEvent(SignUpEvent.OnConfirmPasswordChange(it))
         },
         placeholder = "Confirm Password",
-        visualTransformation = visualTransformation,
-        trailingIcon = {
-            IconButton(
-                onClick = {
-                    confirmPasswordVisibility = !confirmPasswordVisibility
-                },
-            ) {
-                val icon = if (confirmPasswordVisibility) Icons.Rounded.VisibilityOff
-                else Icons.Rounded.Visibility
-                val contentDescription = if (confirmPasswordVisibility) "Hide confirm password"
-                else "Show confirm password"
-
-                Icon(
-                    imageVector = icon,
-                    contentDescription = contentDescription,
-                )
-            }
-        },
     )
 }
 
 @Composable
-fun SignUpButton() {
+fun SignUpButton(viewModel: SignUpViewModel, state: SignUpState) {
+    val text = if (state.isLoading) "Signing Up..." else "Sign Up"
+
     DefaultButton(
         modifier = Modifier.fillMaxWidth(),
-        onClick = {},
-        text = "Sign Up",
+        onClick = {
+            viewModel.onEvent(SignUpEvent.OnSignUpClick)
+        },
+        text = text,
     )
 }
 
