@@ -1,7 +1,5 @@
 package com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_in
 
-import android.app.Application
-import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,10 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignInViewModel @Inject constructor(
-    private val application: Application,
-    private val useCase: AuthUseCase,
-) : ViewModel() {
+class SignInViewModel @Inject constructor(private val useCase: AuthUseCase) : ViewModel() {
     private val _state = mutableStateOf(SignInState())
     val state: State<SignInState> = _state
 
@@ -37,7 +32,10 @@ class SignInViewModel @Inject constructor(
             useCase.signIn(email, password).collectLatest { result ->
                 when (result) {
                     is Resource.Loading -> {
-                        _state.value = SignInState(isLoading = true)
+                        _state.value = SignInState(
+                            isLoading = true,
+                            isSignInSuccess = false,
+                        )
                     }
 
                     is Resource.Success -> {
@@ -50,13 +48,9 @@ class SignInViewModel @Inject constructor(
                     is Resource.Error -> {
                         _state.value = SignInState(
                             isLoading = false,
+                            isSignInSuccess = false,
                             error = result.message ?: "An unknown error occurred",
                         )
-                        Toast.makeText(
-                            application,
-                            result.message ?: "An unknown error occurred",
-                            Toast.LENGTH_LONG,
-                        ).show()
                     }
                 }
             }
@@ -78,11 +72,6 @@ class SignInViewModel @Inject constructor(
                     _state.value = SignInState(
                         error = "Please fill in the fields",
                     )
-                    Toast.makeText(
-                        application,
-                        "Please fill in the fields",
-                        Toast.LENGTH_LONG,
-                    ).show()
                     return
                 }
                 signIn(email, password)

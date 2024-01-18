@@ -9,8 +9,9 @@ import com.ridhaaf.nomnomdelish.feature.domain.repositories.auth.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class AuthRepositoryImpl(
+class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firebaseFirestore: FirebaseFirestore,
 ) : AuthRepository {
@@ -19,14 +20,15 @@ class AuthRepositoryImpl(
         email: String,
         password: String,
     ): Flow<Resource<AuthResult>> = flow {
-        emit(Resource.Loading())
-
         try {
+            emit(Resource.Loading())
+
             val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
 
             val user = hashMapOf(
                 "name" to name,
                 "email" to email,
+                "photoProfileUrl" to null,
             )
             firebaseFirestore.collection("users").document(result.user?.uid ?: "").set(user).await()
 
@@ -40,10 +42,11 @@ class AuthRepositoryImpl(
         email: String,
         password: String,
     ): Flow<Resource<AuthResult>> = flow {
-        emit(Resource.Loading())
-
         try {
+            emit(Resource.Loading())
+
             val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+
             emit(Resource.Success(result))
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
@@ -51,10 +54,11 @@ class AuthRepositoryImpl(
     }
 
     override fun signOut(): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
-
         try {
+            emit(Resource.Loading())
+
             val result = firebaseAuth.signOut()
+
             emit(Resource.Success(result))
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
@@ -62,9 +66,9 @@ class AuthRepositoryImpl(
     }
 
     override fun getCurrentUser(): Flow<Resource<User>> = flow {
-        emit(Resource.Loading())
-
         try {
+            emit(Resource.Loading())
+
             val result = firebaseAuth.currentUser
             if (result != null) {
                 val user = User(

@@ -1,5 +1,6 @@
 package com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_up
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,11 +14,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,6 +41,14 @@ fun SignUpScreen(
     navController: NavController? = null,
 ) {
     val state = viewModel.state.value
+    val error = state.error
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = error) {
+        if (error.isNotBlank()) {
+            Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+        }
+    }
 
     Column(
         modifier = modifier
