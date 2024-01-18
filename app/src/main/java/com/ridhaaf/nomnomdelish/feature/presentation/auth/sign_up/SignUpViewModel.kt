@@ -1,7 +1,5 @@
 package com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_up
 
-import android.app.Application
-import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,10 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(
-    private val application: Application,
-    private val useCase: AuthUseCase,
-) : ViewModel() {
+class SignUpViewModel @Inject constructor(private val useCase: AuthUseCase) : ViewModel() {
     private val _state = mutableStateOf(SignUpState())
     val state: State<SignUpState> = _state
 
@@ -44,7 +39,10 @@ class SignUpViewModel @Inject constructor(
             useCase.signUp(name, email, password).collectLatest { result ->
                 when (result) {
                     is Resource.Loading -> {
-                        _state.value = SignUpState(isLoading = true)
+                        _state.value = SignUpState(
+                            isLoading = true,
+                            isSignUpSuccess = false,
+                        )
                     }
 
                     is Resource.Success -> {
@@ -59,11 +57,6 @@ class SignUpViewModel @Inject constructor(
                             isLoading = false,
                             error = result.message ?: "An unknown error occurred",
                         )
-                        Toast.makeText(
-                            application,
-                            result.message ?: "An unknown error occurred",
-                            Toast.LENGTH_LONG,
-                        ).show()
                     }
                 }
             }
@@ -93,21 +86,11 @@ class SignUpViewModel @Inject constructor(
                     _state.value = SignUpState(
                         error = "Password and confirm password must be the same"
                     )
-                    Toast.makeText(
-                        application,
-                        "Password and confirm password must be the same",
-                        Toast.LENGTH_LONG,
-                    ).show()
                     return
                 } else if (name.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
                     _state.value = SignUpState(
                         error = "Please fill in all the fields"
                     )
-                    Toast.makeText(
-                        application,
-                        "Please fill in all the fields",
-                        Toast.LENGTH_LONG,
-                    ).show()
                     return
                 }
                 signUp(name, email, password)

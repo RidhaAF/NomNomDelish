@@ -1,13 +1,12 @@
 package com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_in
 
-import android.app.Application
-import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.AuthCredential
 import com.ridhaaf.nomnomdelish.core.utils.Resource
 import com.ridhaaf.nomnomdelish.feature.domain.usecases.auth.AuthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,12 +15,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignInViewModel @Inject constructor(
-    private val application: Application,
-    private val useCase: AuthUseCase,
-) : ViewModel() {
+class SignInViewModel @Inject constructor(private val useCase: AuthUseCase) : ViewModel() {
     private val _state = mutableStateOf(SignInState())
     val state: State<SignInState> = _state
+
+    private val _googleState = mutableStateOf(SignInWithGoogleState())
+    val googleState: State<SignInWithGoogleState> = _googleState
 
     var email by mutableStateOf("")
         private set
@@ -37,7 +36,10 @@ class SignInViewModel @Inject constructor(
             useCase.signIn(email, password).collectLatest { result ->
                 when (result) {
                     is Resource.Loading -> {
-                        _state.value = SignInState(isLoading = true)
+                        _state.value = SignInState(
+                            isLoading = true,
+                            isSignInSuccess = false,
+                        )
                     }
 
                     is Resource.Success -> {
@@ -50,13 +52,39 @@ class SignInViewModel @Inject constructor(
                     is Resource.Error -> {
                         _state.value = SignInState(
                             isLoading = false,
+                            isSignInSuccess = false,
                             error = result.message ?: "An unknown error occurred",
                         )
-                        Toast.makeText(
-                            application,
-                            result.message ?: "An unknown error occurred",
-                            Toast.LENGTH_LONG,
-                        ).show()
+                    }
+                }
+            }
+        }
+    }
+
+    fun signInWithGoogle(credential: AuthCredential) {
+        viewModelScope.launch {
+            useCase.signInWithGoogle(credential).collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _googleState.value = SignInWithGoogleState(
+                            isLoading = true,
+                            isSignInWithGoogleSuccess = false,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _googleState.value = SignInWithGoogleState(
+                            isLoading = false,
+                            isSignInWithGoogleSuccess = true,
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        _googleState.value = SignInWithGoogleState(
+                            isLoading = false,
+                            isSignInWithGoogleSuccess = false,
+                            error = result.message ?: "An unknown error occurred",
+                        )
                     }
                 }
             }
@@ -78,11 +106,6 @@ class SignInViewModel @Inject constructor(
                     _state.value = SignInState(
                         error = "Please fill in the fields",
                     )
-                    Toast.makeText(
-                        application,
-                        "Please fill in the fields",
-                        Toast.LENGTH_LONG,
-                    ).show()
                     return
                 }
                 signIn(email, password)

@@ -1,5 +1,6 @@
 package com.ridhaaf.nomnomdelish.feature.domain.repositories.auth
 
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.ridhaaf.nomnomdelish.core.utils.Resource
 import com.ridhaaf.nomnomdelish.feature.data.models.User
@@ -16,6 +17,8 @@ interface AuthRepository {
         email: String,
         password: String,
     ): Flow<Resource<AuthResult>>
+
+    fun signInWithGoogle(credential: AuthCredential): Flow<Resource<AuthResult>>
 
     fun signOut(): Flow<Resource<Unit>>
 

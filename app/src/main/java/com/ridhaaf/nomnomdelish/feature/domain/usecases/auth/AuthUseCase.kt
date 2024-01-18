@@ -1,5 +1,6 @@
 package com.ridhaaf.nomnomdelish.feature.domain.usecases.auth
 
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.ridhaaf.nomnomdelish.core.utils.Resource
 import com.ridhaaf.nomnomdelish.feature.data.models.User
@@ -20,6 +21,10 @@ class AuthUseCase(private val repository: AuthRepository) {
         password: String,
     ): Flow<Resource<AuthResult>> {
         return repository.signIn(email, password)
+    }
+
+    fun signInWithGoogle(credential: AuthCredential): Flow<Resource<AuthResult>> {
+        return repository.signInWithGoogle(credential)
     }
 
     fun signOut(): Flow<Resource<Unit>> {

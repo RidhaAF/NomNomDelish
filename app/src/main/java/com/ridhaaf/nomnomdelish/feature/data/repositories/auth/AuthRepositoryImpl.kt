@@ -1,5 +1,6 @@
 package com.ridhaaf.nomnomdelish.feature.data.repositories.auth
 
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -9,8 +10,9 @@ import com.ridhaaf.nomnomdelish.feature.domain.repositories.auth.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class AuthRepositoryImpl(
+class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firebaseFirestore: FirebaseFirestore,
 ) : AuthRepository {
@@ -19,16 +21,17 @@ class AuthRepositoryImpl(
         email: String,
         password: String,
     ): Flow<Resource<AuthResult>> = flow {
-        emit(Resource.Loading())
-
         try {
+            emit(Resource.Loading())
+
             val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
 
-            val user = hashMapOf(
-                "name" to name,
-                "email" to email,
+            val user = result.user
+            insertUser(
+                user?.uid ?: "",
+                name,
+                email,
             )
-            firebaseFirestore.collection("users").document(result.user?.uid ?: "").set(user).await()
 
             emit(Resource.Success(result))
         } catch (e: Exception) {
@@ -40,21 +43,57 @@ class AuthRepositoryImpl(
         email: String,
         password: String,
     ): Flow<Resource<AuthResult>> = flow {
-        emit(Resource.Loading())
-
         try {
+            emit(Resource.Loading())
+
             val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+
             emit(Resource.Success(result))
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
         }
     }
 
-    override fun signOut(): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
-
+    override fun signInWithGoogle(credential: AuthCredential): Flow<Resource<AuthResult>> = flow {
         try {
+            emit(Resource.Loading())
+
+            val result = firebaseAuth.signInWithCredential(credential).await()
+
+            val user = result.user
+            insertUser(
+                user?.uid ?: "",
+                user?.displayName ?: "",
+                user?.email ?: "",
+                user?.photoUrl.toString(),
+            )
+
+            emit(Resource.Success(result))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+        }
+    }
+
+    private suspend fun insertUser(
+        id: String,
+        name: String,
+        email: String,
+        photoProfileUrl: String? = null,
+    ) {
+        val user = hashMapOf(
+            "name" to name,
+            "email" to email,
+            "photoProfileUrl" to photoProfileUrl,
+        )
+        firebaseFirestore.collection("users").document(id).set(user).await()
+    }
+
+    override fun signOut(): Flow<Resource<Unit>> = flow {
+        try {
+            emit(Resource.Loading())
+
             val result = firebaseAuth.signOut()
+
             emit(Resource.Success(result))
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
@@ -62,9 +101,9 @@ class AuthRepositoryImpl(
     }
 
     override fun getCurrentUser(): Flow<Resource<User>> = flow {
-        emit(Resource.Loading())
-
         try {
+            emit(Resource.Loading())
+
             val result = firebaseAuth.currentUser
             if (result != null) {
                 val user = User(
