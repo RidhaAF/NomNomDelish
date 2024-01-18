@@ -154,11 +154,12 @@ fun SignUpButton(viewModel: SignUpViewModel, state: SignUpState) {
     val text = if (state.isLoading) "Signing Up..." else "Sign Up"
 
     DefaultButton(
-        modifier = Modifier.fillMaxWidth(),
         onClick = {
             viewModel.onEvent(SignUpEvent.OnSignUpClick)
         },
-        text = text,
+        child = {
+            Text(text = text)
+        },
     )
 }
 
