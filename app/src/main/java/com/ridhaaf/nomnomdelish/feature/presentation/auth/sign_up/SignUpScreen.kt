@@ -27,6 +27,8 @@ import androidx.navigation.NavController
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultButton
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultSpacer
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultTextField
+import com.ridhaaf.nomnomdelish.feature.presentation.components.GoogleButton
+import com.ridhaaf.nomnomdelish.feature.presentation.components.OrSignWith
 import java.util.Locale
 
 @Composable
@@ -57,6 +59,10 @@ fun SignUpScreen(
             viewModel = viewModel,
             state = state,
         )
+        DefaultSpacer()
+        OrSignUpWith()
+        DefaultSpacer()
+        GoogleSignUpButton()
         DefaultSpacer()
         RedirectToSignIn(navController)
     }
@@ -160,6 +166,19 @@ fun SignUpButton(viewModel: SignUpViewModel, state: SignUpState) {
         child = {
             Text(text = text)
         },
+    )
+}
+
+@Composable
+fun OrSignUpWith() {
+    OrSignWith("Or sign up with")
+}
+
+@Composable
+fun GoogleSignUpButton() {
+    GoogleButton(
+        onClick = {},
+        text = "Sign Up with Google",
     )
 }
 
