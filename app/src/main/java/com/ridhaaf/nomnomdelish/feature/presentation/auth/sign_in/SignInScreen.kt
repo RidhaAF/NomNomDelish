@@ -80,6 +80,12 @@ fun SignInScreen(
         }
     }
 
+    LaunchedEffect(key1 = viewModel.isAuth()) {
+        if (viewModel.isAuth()) {
+            navigateToMain(navController)
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -95,6 +101,7 @@ fun SignInScreen(
         SignInButton(
             viewModel = viewModel,
             state = state,
+            navController = navController,
         )
         DefaultSpacer()
         OrSignInWith()
@@ -103,6 +110,7 @@ fun SignInScreen(
             context = context,
             launcher = launcher,
             googleState = googleState,
+            navController = navController,
         )
         DefaultSpacer()
         RedirectToSignUp(navController)
@@ -161,8 +169,18 @@ fun PasswordTextField(viewModel: SignInViewModel) {
 }
 
 @Composable
-fun SignInButton(viewModel: SignInViewModel, state: SignInState) {
+fun SignInButton(
+    viewModel: SignInViewModel,
+    state: SignInState,
+    navController: NavController?,
+) {
     val text = if (state.isLoading) "Signing in..." else "Sign in"
+
+    LaunchedEffect(key1 = state.isSignInSuccess) {
+        if (state.isSignInSuccess) {
+            navigateToMain(navController)
+        }
+    }
 
     DefaultButton(
         onClick = {
@@ -184,8 +202,15 @@ fun GoogleSignInButton(
     context: Context,
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     googleState: SignInWithGoogleState,
+    navController: NavController?,
 ) {
     val text = if (googleState.isLoading) "Signing in..." else "Sign in with Google"
+
+    LaunchedEffect(key1 = googleState.isSignInWithGoogleSuccess) {
+        if (googleState.isSignInWithGoogleSuccess) {
+            navigateToMain(navController)
+        }
+    }
 
     GoogleButton(
         onClick = {
@@ -219,4 +244,12 @@ fun RedirectToSignUp(navController: NavController?) {
 @Composable
 fun SignInScreenPreview() {
     SignInScreen()
+}
+
+private fun navigateToMain(navController: NavController?) {
+    navController?.navigate("main") {
+        popUpTo("sign-in") {
+            inclusive = true
+        }
+    }
 }

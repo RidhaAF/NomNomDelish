@@ -8,6 +8,10 @@ import com.ridhaaf.nomnomdelish.feature.domain.repositories.auth.AuthRepository
 import kotlinx.coroutines.flow.Flow
 
 class AuthUseCase(private val repository: AuthRepository) {
+    fun isAuthenticated(): Flow<Resource<Boolean>> {
+        return repository.isAuthenticated()
+    }
+
     fun signUp(
         name: String,
         email: String,

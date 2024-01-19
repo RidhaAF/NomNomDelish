@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ridhaaf.nomnomdelish.feature.presentation.MainScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_in.SignInScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_up.SignUpScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.routes.Routes
@@ -53,6 +54,11 @@ fun App(modifier: Modifier = Modifier) {
             SignUpScreen(
                 modifier = modifier,
                 navController = navController,
+            )
+        }
+        composable(Routes.MAIN) {
+            MainScreen(
+                modifier = modifier,
             )
         }
     }

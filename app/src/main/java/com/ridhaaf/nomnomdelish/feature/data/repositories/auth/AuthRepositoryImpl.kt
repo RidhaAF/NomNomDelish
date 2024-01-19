@@ -16,6 +16,18 @@ class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firebaseFirestore: FirebaseFirestore,
 ) : AuthRepository {
+    override fun isAuthenticated(): Flow<Resource<Boolean>> = flow {
+        try {
+            emit(Resource.Loading())
+
+            val result = firebaseAuth.currentUser != null
+
+            emit(Resource.Success(result))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+        }
+    }
+
     override fun signUp(
         name: String,
         email: String,

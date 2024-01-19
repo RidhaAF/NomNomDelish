@@ -7,6 +7,8 @@ import com.ridhaaf.nomnomdelish.feature.data.models.User
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
+    fun isAuthenticated(): Flow<Resource<Boolean>>
+
     fun signUp(
         name: String,
         email: String,
