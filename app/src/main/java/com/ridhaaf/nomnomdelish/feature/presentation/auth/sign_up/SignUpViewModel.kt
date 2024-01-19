@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.AuthCredential
 import com.ridhaaf.nomnomdelish.core.utils.Resource
 import com.ridhaaf.nomnomdelish.feature.domain.usecases.auth.AuthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +18,9 @@ import javax.inject.Inject
 class SignUpViewModel @Inject constructor(private val useCase: AuthUseCase) : ViewModel() {
     private val _state = mutableStateOf(SignUpState())
     val state: State<SignUpState> = _state
+
+    private val _googleState = mutableStateOf(SignUpWithGoogleState())
+    val googleState: State<SignUpWithGoogleState> = _googleState
 
     var name by mutableStateOf("")
         private set
@@ -55,6 +59,36 @@ class SignUpViewModel @Inject constructor(private val useCase: AuthUseCase) : Vi
                     is Resource.Error -> {
                         _state.value = SignUpState(
                             isLoading = false,
+                            error = result.message ?: "An unknown error occurred",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun signUpWithGoogle(credential: AuthCredential) {
+        viewModelScope.launch {
+            useCase.signInWithGoogle(credential).collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _googleState.value = SignUpWithGoogleState(
+                            isLoading = true,
+                            isSignUpWithGoogleSuccess = false,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _googleState.value = SignUpWithGoogleState(
+                            isLoading = false,
+                            isSignUpWithGoogleSuccess = true,
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        _googleState.value = SignUpWithGoogleState(
+                            isLoading = false,
+                            isSignUpWithGoogleSuccess = false,
                             error = result.message ?: "An unknown error occurred",
                         )
                     }
