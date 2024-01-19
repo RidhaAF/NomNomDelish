@@ -162,7 +162,7 @@ fun PasswordTextField(viewModel: SignInViewModel) {
 
 @Composable
 fun SignInButton(viewModel: SignInViewModel, state: SignInState) {
-    val text = if (state.isLoading) "Signing In..." else "Sign In"
+    val text = if (state.isLoading) "Signing in..." else "Sign in"
 
     DefaultButton(
         onClick = {
@@ -185,7 +185,7 @@ fun GoogleSignInButton(
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     googleState: SignInWithGoogleState,
 ) {
-    val text = if (googleState.isLoading) "Signing In..." else "Sign In with Google"
+    val text = if (googleState.isLoading) "Signing in..." else "Sign in with Google"
 
     GoogleButton(
         onClick = {

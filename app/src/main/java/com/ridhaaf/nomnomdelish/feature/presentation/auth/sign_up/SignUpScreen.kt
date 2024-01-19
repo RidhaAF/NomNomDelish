@@ -203,7 +203,7 @@ fun ConfirmPasswordTextField(viewModel: SignUpViewModel) {
 
 @Composable
 fun SignUpButton(viewModel: SignUpViewModel, state: SignUpState) {
-    val text = if (state.isLoading) "Signing Up..." else "Sign Up"
+    val text = if (state.isLoading) "Signing up..." else "Sign up"
 
     DefaultButton(
         onClick = {
@@ -226,7 +226,7 @@ fun GoogleSignUpButton(
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     googleState: SignUpWithGoogleState,
 ) {
-    val text = if (googleState.isLoading) "Signing Up..." else "Sign Up with Google"
+    val text = if (googleState.isLoading) "Signing up..." else "Sign up with Google"
 
     GoogleButton(
         onClick = {
