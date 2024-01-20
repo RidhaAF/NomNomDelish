@@ -1,6 +1,12 @@
 package com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_up
 
+import android.content.Context
+import android.content.Intent
 import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,11 +33,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
+import com.ridhaaf.nomnomdelish.R
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultButton
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultSpacer
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultTextField
 import com.ridhaaf.nomnomdelish.feature.presentation.components.GoogleButton
 import com.ridhaaf.nomnomdelish.feature.presentation.components.OrSignWith
+import com.ridhaaf.nomnomdelish.feature.presentation.routes.Routes
 import java.util.Locale
 
 @Composable
@@ -42,11 +54,50 @@ fun SignUpScreen(
 ) {
     val state = viewModel.state.value
     val error = state.error
+    val googleState = viewModel.googleState.value
+    val googleError = googleState.error
     val context = LocalContext.current
+
+    LaunchedEffect(key1 = viewModel.isAuth()) {
+        if (viewModel.isAuth()) {
+            redirectAfterSignUp(navController)
+        }
+    }
+
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+            val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+            try {
+                val result = account.getResult(ApiException::class.java)
+                val credentials = GoogleAuthProvider.getCredential(result.idToken, null)
+                viewModel.signUpWithGoogle(credentials)
+            } catch (it: ApiException) {
+                println(it)
+            }
+        }
 
     LaunchedEffect(key1 = error) {
         if (error.isNotBlank()) {
             Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    LaunchedEffect(key1 = googleError) {
+        if (googleError.isNotBlank()) {
+            Toast.makeText(context, googleError, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    LaunchedEffect(key1 = state.isSignUpSuccess) {
+        if (state.isSignUpSuccess) {
+            redirectAfterSignUp(navController)
+        }
+    }
+
+    LaunchedEffect(key1 = googleState.isSignUpWithGoogleSuccess) {
+        if (googleState.isSignUpWithGoogleSuccess) {
+            redirectAfterSignUp(navController)
+            viewModel.resetState()
         }
     }
 
@@ -73,7 +124,11 @@ fun SignUpScreen(
         DefaultSpacer()
         OrSignUpWith()
         DefaultSpacer()
-        GoogleSignUpButton()
+        GoogleSignUpButton(
+            context = context,
+            launcher = launcher,
+            googleState = googleState,
+        )
         DefaultSpacer()
         RedirectToSignIn(navController)
     }
@@ -168,7 +223,7 @@ fun ConfirmPasswordTextField(viewModel: SignUpViewModel) {
 
 @Composable
 fun SignUpButton(viewModel: SignUpViewModel, state: SignUpState) {
-    val text = if (state.isLoading) "Signing Up..." else "Sign Up"
+    val text = if (state.isLoading) "Signing up..." else "Sign up"
 
     DefaultButton(
         onClick = {
@@ -186,10 +241,24 @@ fun OrSignUpWith() {
 }
 
 @Composable
-fun GoogleSignUpButton() {
+fun GoogleSignUpButton(
+    context: Context,
+    launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    googleState: SignUpWithGoogleState,
+) {
+    val text = if (googleState.isLoading) "Signing up..." else "Sign up with Google"
+
     GoogleButton(
-        onClick = {},
-        text = "Sign Up with Google",
+        onClick = {
+            val googleSignInOptions =
+                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail()
+                    .requestIdToken(context.getString(R.string.web_client_id)).build()
+
+            val googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
+
+            launcher.launch(googleSignInClient.signInIntent)
+        },
+        text = text,
     )
 }
 
@@ -211,4 +280,12 @@ fun RedirectToSignIn(navController: NavController?) {
 @Composable
 fun SignUpScreenPreview() {
     SignUpScreen()
+}
+
+private fun redirectAfterSignUp(navController: NavController?) {
+    navController?.navigate(Routes.HOME) {
+        popUpTo(Routes.HOME) {
+            inclusive = true
+        }
+    }
 }
