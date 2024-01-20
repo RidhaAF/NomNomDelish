@@ -25,7 +25,7 @@ fun ProfileScreen(
     LaunchedEffect(key1 = state.isSignOutSuccess) {
         if (state.isSignOutSuccess) {
             navController?.navigate(Routes.SIGN_IN) {
-                popUpTo(Routes.PROFILE) {
+                popUpTo(Routes.SIGN_IN) {
                     inclusive = true
                 }
             }

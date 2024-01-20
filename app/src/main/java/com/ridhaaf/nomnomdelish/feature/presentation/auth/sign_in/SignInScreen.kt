@@ -59,7 +59,7 @@ fun SignInScreen(
 
     LaunchedEffect(key1 = viewModel.isAuth()) {
         if (viewModel.isAuth()) {
-            navigateToMain(navController)
+            redirectAfterSignUp(navController)
         }
     }
 
@@ -89,13 +89,13 @@ fun SignInScreen(
 
     LaunchedEffect(key1 = state.isSignInSuccess) {
         if (state.isSignInSuccess) {
-            navigateToMain(navController)
+            redirectAfterSignUp(navController)
         }
     }
 
     LaunchedEffect(key1 = googleState.isSignInWithGoogleSuccess) {
         if (googleState.isSignInWithGoogleSuccess) {
-            navigateToMain(navController)
+            redirectAfterSignUp(navController)
             viewModel.resetState()
         }
     }
@@ -244,9 +244,9 @@ fun SignInScreenPreview() {
     SignInScreen()
 }
 
-private fun navigateToMain(navController: NavController?) {
-    navController?.navigate(Routes.MAIN) {
-        popUpTo(Routes.SIGN_IN) {
+private fun redirectAfterSignUp(navController: NavController?) {
+    navController?.navigate(Routes.HOME) {
+        popUpTo(Routes.HOME) {
             inclusive = true
         }
     }
