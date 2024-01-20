@@ -43,6 +43,7 @@ import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultSpacer
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultTextField
 import com.ridhaaf.nomnomdelish.feature.presentation.components.GoogleButton
 import com.ridhaaf.nomnomdelish.feature.presentation.components.OrSignWith
+import com.ridhaaf.nomnomdelish.feature.presentation.routes.Routes
 import java.util.Locale
 
 @Composable
@@ -56,6 +57,12 @@ fun SignUpScreen(
     val googleState = viewModel.googleState.value
     val googleError = googleState.error
     val context = LocalContext.current
+
+    LaunchedEffect(key1 = viewModel.isAuth()) {
+        if (viewModel.isAuth()) {
+            navigateToMain(navController)
+        }
+    }
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
@@ -78,6 +85,19 @@ fun SignUpScreen(
     LaunchedEffect(key1 = googleError) {
         if (googleError.isNotBlank()) {
             Toast.makeText(context, googleError, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    LaunchedEffect(key1 = state.isSignUpSuccess) {
+        if (state.isSignUpSuccess) {
+            navigateToMain(navController)
+        }
+    }
+
+    LaunchedEffect(key1 = googleState.isSignUpWithGoogleSuccess) {
+        if (googleState.isSignUpWithGoogleSuccess) {
+            navigateToMain(navController)
+            viewModel.resetState()
         }
     }
 
@@ -260,4 +280,12 @@ fun RedirectToSignIn(navController: NavController?) {
 @Composable
 fun SignUpScreenPreview() {
     SignUpScreen()
+}
+
+private fun navigateToMain(navController: NavController?) {
+    navController?.navigate(Routes.MAIN) {
+        popUpTo(Routes.SIGN_UP) {
+            inclusive = true
+        }
+    }
 }

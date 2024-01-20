@@ -39,13 +39,21 @@ class SignInViewModel @Inject constructor(private val useCase: AuthUseCase) : Vi
                             isLoading = true,
                             isSignInSuccess = false,
                         )
+                        _googleState.value = SignInWithGoogleState(
+                            isLoading = true,
+                            isSignInWithGoogleSuccess = false,
+                        )
                     }
 
                     is Resource.Success -> {
                         isAuthenticated = result.data ?: false
                         _state.value = SignInState(
                             isLoading = false,
-                            isSignInSuccess = true,
+                            isSignInSuccess = isAuthenticated,
+                        )
+                        _googleState.value = SignInWithGoogleState(
+                            isLoading = false,
+                            isSignInWithGoogleSuccess = isAuthenticated,
                         )
                     }
 
@@ -53,6 +61,11 @@ class SignInViewModel @Inject constructor(private val useCase: AuthUseCase) : Vi
                         _state.value = SignInState(
                             isLoading = false,
                             isSignInSuccess = false,
+                            error = result.message ?: "An unknown error occurred",
+                        )
+                        _googleState.value = SignInWithGoogleState(
+                            isLoading = false,
+                            isSignInWithGoogleSuccess = false,
                             error = result.message ?: "An unknown error occurred",
                         )
                     }
@@ -145,5 +158,10 @@ class SignInViewModel @Inject constructor(private val useCase: AuthUseCase) : Vi
                 signIn(email, password)
             }
         }
+    }
+
+    fun resetState() {
+        _state.value = SignInState()
+        _googleState.value = SignInWithGoogleState()
     }
 }

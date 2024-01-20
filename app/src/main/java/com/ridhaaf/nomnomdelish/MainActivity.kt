@@ -7,14 +7,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ridhaaf.nomnomdelish.feature.presentation.MainScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_in.SignInScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_up.SignUpScreen
+import com.ridhaaf.nomnomdelish.feature.presentation.favorite.FavoriteScreen
+import com.ridhaaf.nomnomdelish.feature.presentation.home.HomeScreen
+import com.ridhaaf.nomnomdelish.feature.presentation.profile.ProfileScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.routes.Routes
 import com.ridhaaf.nomnomdelish.ui.theme.NomNomDelishTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +44,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
 
     NavHost(
         navController = navController,
@@ -59,6 +66,26 @@ fun App(modifier: Modifier = Modifier) {
         composable(Routes.MAIN) {
             MainScreen(
                 modifier = modifier,
+                navController = navController,
+                currentDestination = currentDestination,
+            )
+        }
+        composable(Routes.HOME) {
+            HomeScreen(
+                modifier = modifier,
+                navController = navController,
+            )
+        }
+        composable(Routes.FAVORITE) {
+            FavoriteScreen(
+                modifier = modifier,
+                navController = navController,
+            )
+        }
+        composable(Routes.PROFILE) {
+            ProfileScreen(
+                modifier = modifier,
+                navController = navController,
             )
         }
     }

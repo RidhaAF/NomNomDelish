@@ -43,6 +43,7 @@ import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultSpacer
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultTextField
 import com.ridhaaf.nomnomdelish.feature.presentation.components.GoogleButton
 import com.ridhaaf.nomnomdelish.feature.presentation.components.OrSignWith
+import com.ridhaaf.nomnomdelish.feature.presentation.routes.Routes
 
 @Composable
 fun SignInScreen(
@@ -55,6 +56,12 @@ fun SignInScreen(
     val googleState = viewModel.googleState.value
     val googleError = googleState.error
     val context = LocalContext.current
+
+    LaunchedEffect(key1 = viewModel.isAuth()) {
+        if (viewModel.isAuth()) {
+            navigateToMain(navController)
+        }
+    }
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
@@ -80,9 +87,16 @@ fun SignInScreen(
         }
     }
 
-    LaunchedEffect(key1 = viewModel.isAuth()) {
-        if (viewModel.isAuth()) {
+    LaunchedEffect(key1 = state.isSignInSuccess) {
+        if (state.isSignInSuccess) {
             navigateToMain(navController)
+        }
+    }
+
+    LaunchedEffect(key1 = googleState.isSignInWithGoogleSuccess) {
+        if (googleState.isSignInWithGoogleSuccess) {
+            navigateToMain(navController)
+            viewModel.resetState()
         }
     }
 
@@ -101,7 +115,6 @@ fun SignInScreen(
         SignInButton(
             viewModel = viewModel,
             state = state,
-            navController = navController,
         )
         DefaultSpacer()
         OrSignInWith()
@@ -110,7 +123,6 @@ fun SignInScreen(
             context = context,
             launcher = launcher,
             googleState = googleState,
-            navController = navController,
         )
         DefaultSpacer()
         RedirectToSignUp(navController)
@@ -172,15 +184,8 @@ fun PasswordTextField(viewModel: SignInViewModel) {
 fun SignInButton(
     viewModel: SignInViewModel,
     state: SignInState,
-    navController: NavController?,
 ) {
     val text = if (state.isLoading) "Signing in..." else "Sign in"
-
-    LaunchedEffect(key1 = state.isSignInSuccess) {
-        if (state.isSignInSuccess) {
-            navigateToMain(navController)
-        }
-    }
 
     DefaultButton(
         onClick = {
@@ -202,15 +207,8 @@ fun GoogleSignInButton(
     context: Context,
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     googleState: SignInWithGoogleState,
-    navController: NavController?,
 ) {
     val text = if (googleState.isLoading) "Signing in..." else "Sign in with Google"
-
-    LaunchedEffect(key1 = googleState.isSignInWithGoogleSuccess) {
-        if (googleState.isSignInWithGoogleSuccess) {
-            navigateToMain(navController)
-        }
-    }
 
     GoogleButton(
         onClick = {
@@ -231,7 +229,7 @@ fun RedirectToSignUp(navController: NavController?) {
     TextButton(
         modifier = Modifier.fillMaxWidth(),
         onClick = {
-            navController?.navigate("sign-up")
+            navController?.navigate(Routes.SIGN_UP)
         },
     ) {
         Text(
@@ -247,8 +245,8 @@ fun SignInScreenPreview() {
 }
 
 private fun navigateToMain(navController: NavController?) {
-    navController?.navigate("main") {
-        popUpTo("sign-in") {
+    navController?.navigate(Routes.MAIN) {
+        popUpTo(Routes.SIGN_IN) {
             inclusive = true
         }
     }

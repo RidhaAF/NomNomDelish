@@ -34,6 +34,53 @@ class SignUpViewModel @Inject constructor(private val useCase: AuthUseCase) : Vi
     var confirmPassword by mutableStateOf("")
         private set
 
+    private var isAuthenticated by mutableStateOf(false)
+
+    fun isAuth(): Boolean {
+        viewModelScope.launch {
+            useCase.isAuthenticated().collectLatest { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = SignUpState(
+                            isLoading = true,
+                            isSignUpSuccess = false,
+                        )
+                        _googleState.value = SignUpWithGoogleState(
+                            isLoading = true,
+                            isSignUpWithGoogleSuccess = false,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        isAuthenticated = result.data ?: false
+                        _state.value = SignUpState(
+                            isLoading = false,
+                            isSignUpSuccess = isAuthenticated,
+                        )
+                        _googleState.value = SignUpWithGoogleState(
+                            isLoading = false,
+                            isSignUpWithGoogleSuccess = isAuthenticated,
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = SignUpState(
+                            isLoading = false,
+                            isSignUpSuccess = false,
+                            error = result.message ?: "An unknown error occurred",
+                        )
+                        _googleState.value = SignUpWithGoogleState(
+                            isLoading = false,
+                            isSignUpWithGoogleSuccess = false,
+                            error = result.message ?: "An unknown error occurred",
+                        )
+                    }
+                }
+            }
+        }
+        return isAuthenticated
+    }
+
     private fun signUp(
         name: String,
         email: String,
@@ -130,5 +177,10 @@ class SignUpViewModel @Inject constructor(private val useCase: AuthUseCase) : Vi
                 signUp(name, email, password)
             }
         }
+    }
+
+    fun resetState() {
+        _state.value = SignUpState()
+        _googleState.value = SignUpWithGoogleState()
     }
 }
