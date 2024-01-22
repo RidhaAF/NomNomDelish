@@ -93,4 +93,7 @@ dependencies {
     testImplementation("com.google.dagger:hilt-android-testing:$daggerVersion")
     kspTest("com.google.dagger:hilt-compiler:$daggerVersion")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
 }

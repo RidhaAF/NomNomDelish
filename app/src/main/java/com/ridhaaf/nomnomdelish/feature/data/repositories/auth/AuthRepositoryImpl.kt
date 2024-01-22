@@ -3,6 +3,7 @@ package com.ridhaaf.nomnomdelish.feature.data.repositories.auth
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ridhaaf.nomnomdelish.core.utils.Resource
 import com.ridhaaf.nomnomdelish.feature.data.models.User
@@ -118,11 +119,22 @@ class AuthRepositoryImpl @Inject constructor(
 
             val result = firebaseAuth.currentUser
             if (result != null) {
-                val user = User(
-                    name = result.displayName ?: "",
-                    email = result.email ?: "",
-                    photoProfileUrl = result.photoUrl.toString(),
-                )
+                val isSignedInWithGoogle =
+                    result.providerData.any { it.providerId == GoogleAuthProvider.PROVIDER_ID }
+
+                val user = User()
+                if (isSignedInWithGoogle) {
+                    user.name = result.displayName ?: ""
+                    user.email = result.email ?: ""
+                    user.photoProfileUrl = result.photoUrl.toString()
+                } else {
+                    val id = result.uid
+                    val document = firebaseFirestore.collection("users").document(id).get().await()
+
+                    user.name = document["name"] as String? ?: ""
+                    user.email = document["email"] as String? ?: ""
+                    user.photoProfileUrl = document["photoProfileUrl"] as String?
+                }
                 emit(Resource.Success(user))
             } else {
                 emit(Resource.Error("User not found"))

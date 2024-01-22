@@ -80,7 +80,7 @@ class SignInViewModel @Inject constructor(private val useCase: AuthUseCase) : Vi
         password: String,
     ) {
         viewModelScope.launch {
-            useCase.signIn(email, password).collectLatest { result ->
+            useCase.signIn(email, password).collect { result ->
                 when (result) {
                     is Resource.Loading -> {
                         _state.value = SignInState(
