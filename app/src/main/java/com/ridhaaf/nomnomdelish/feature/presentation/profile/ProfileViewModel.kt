@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ridhaaf.nomnomdelish.core.utils.Resource
-import com.ridhaaf.nomnomdelish.feature.data.models.User
+import com.ridhaaf.nomnomdelish.feature.data.models.auth.User
 import com.ridhaaf.nomnomdelish.feature.domain.usecases.auth.AuthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest

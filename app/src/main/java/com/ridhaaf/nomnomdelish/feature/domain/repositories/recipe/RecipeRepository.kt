@@ -1,7 +1,7 @@
 package com.ridhaaf.nomnomdelish.feature.domain.repositories.recipe
 
 import com.ridhaaf.nomnomdelish.core.utils.Resource
-import com.ridhaaf.nomnomdelish.feature.data.models.Recipe
+import com.ridhaaf.nomnomdelish.feature.data.models.recipe.Recipe
 import kotlinx.coroutines.flow.Flow
 
 interface RecipeRepository {

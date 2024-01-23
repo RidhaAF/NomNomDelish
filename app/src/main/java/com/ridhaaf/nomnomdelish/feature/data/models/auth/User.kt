@@ -1,4 +1,4 @@
-package com.ridhaaf.nomnomdelish.feature.data.models
+package com.ridhaaf.nomnomdelish.feature.data.models.auth
 
 data class User(
     var name: String = "",

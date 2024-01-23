@@ -13,6 +13,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -31,6 +32,15 @@ object NomNomDishModule {
     @Singleton
     fun provideFirebaseFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDotEnv(): Dotenv {
+        return dotenv {
+            directory = "/assets"
+            filename = "env"
+        }
     }
 
     @Provides
@@ -62,14 +72,16 @@ object NomNomDishModule {
     @Singleton
     fun provideRecipeRepository(
         api: RecipeApi,
+        dotenv: Dotenv,
     ): RecipeRepository {
-        return RecipeRepositoryImpl(api)
+        val apiKey = dotenv["API_KEY"]
+
+        return RecipeRepositoryImpl(api, apiKey)
     }
 
     @Provides
     @Singleton
-    fun provideRecipeApi(): RecipeApi {
-        val dotenv = dotenv()
+    fun provideRecipeApi(dotenv: Dotenv): RecipeApi {
         val baseUrl = dotenv["BASE_URL"]
 
         return Retrofit.Builder().baseUrl(baseUrl)

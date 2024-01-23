@@ -1,24 +1,23 @@
 package com.ridhaaf.nomnomdelish.feature.data.datasources.remote.api.recipe
 
-import com.ridhaaf.nomnomdelish.feature.data.models.Recipe
+import com.ridhaaf.nomnomdelish.feature.data.datasources.remote.dto.recipe.RecipeDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface RecipeApi {
-    @GET("/{apiKey}/random.php")
-    fun getRandomRecipe(
+    @GET("{apiKey}/random.php")
+    suspend fun getRandomRecipe(
         @Path("apiKey") apiKey: String,
-    ): Recipe
+    ): RecipeDto
 
-    @GET("/{apiKey}/lookup.php?i={id}")
-    fun getRecipeById(
+    @GET("{apiKey}/lookup.php?i={id}")
+    suspend fun getRecipeById(
         @Path("apiKey") apiKey: String,
         @Path("id") id: String,
-    ): Recipe
+    ): RecipeDto
 
-    @GET("/{apiKey}/search.php?s={query}")
-    fun searchRecipe(
+    suspend fun searchRecipe(
         @Path("apiKey") apiKey: String,
         @Path("query") query: String,
-    ): Recipe
+    ): RecipeDto
 }
