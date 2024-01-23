@@ -16,7 +16,14 @@ class HomeViewModel @Inject constructor(private val useCase: RecipeUseCase) : Vi
     private val _state = mutableStateOf(HomeState())
     val state: State<HomeState> = _state
 
+    private val _isRefreshing = mutableStateOf(false)
+    val isRefreshing: State<Boolean> = _isRefreshing
+
     init {
+        getRandomRecipe()
+    }
+
+    fun refresh() {
         getRandomRecipe()
     }
 
