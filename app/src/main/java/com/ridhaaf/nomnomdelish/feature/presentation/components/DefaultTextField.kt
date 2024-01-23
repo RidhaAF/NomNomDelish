@@ -17,6 +17,8 @@ fun DefaultTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
     placeholder: String,
     isObscure: Boolean = false,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -25,6 +27,8 @@ fun DefaultTextField(
         modifier = modifier.fillMaxWidth(),
         value = value,
         onValueChange = onValueChange,
+        enabled = enabled,
+        readOnly = readOnly,
         placeholder = { Text(text = placeholder) },
         visualTransformation = if (isObscure) PasswordVisualTransformation() else VisualTransformation.None,
         trailingIcon = trailingIcon,
@@ -32,6 +36,7 @@ fun DefaultTextField(
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
         )
     )
 }

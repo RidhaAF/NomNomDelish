@@ -2,6 +2,7 @@ package com.ridhaaf.nomnomdelish.feature.presentation.home
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,11 +17,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +43,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultSpacer
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultTextField
+import com.ridhaaf.nomnomdelish.feature.presentation.routes.Routes
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -75,6 +81,7 @@ fun HomeScreen(
         ) {
             IntroSection()
             DefaultSpacer()
+            SearchSection(navController)
             RandomRecipeCard(state)
         }
         PullRefreshIndicator(
@@ -117,6 +124,30 @@ fun IntroSection() {
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
+    }
+}
+
+@Composable
+fun SearchSection(navController: NavController?) {
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+            .clickable {
+                navController?.navigate(Routes.SEARCH)
+            },
+    ) {
+        DefaultTextField(
+            value = "",
+            onValueChange = {},
+            enabled = false,
+            placeholder = "Search recipes...",
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Rounded.Search,
+                    contentDescription = "Search",
+                )
+            },
+        )
     }
 }
 

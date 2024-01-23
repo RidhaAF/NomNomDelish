@@ -3,6 +3,7 @@ package com.ridhaaf.nomnomdelish.feature.data.datasources.remote.api.recipe
 import com.ridhaaf.nomnomdelish.feature.data.datasources.remote.dto.recipe.RecipeDto
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface RecipeApi {
     @GET("{apiKey}/random.php")
@@ -16,8 +17,9 @@ interface RecipeApi {
         @Path("id") id: String,
     ): RecipeDto
 
+    @GET("{apiKey}/search.php")
     suspend fun searchRecipe(
         @Path("apiKey") apiKey: String,
-        @Path("query") query: String,
+        @Query("s") query: String,
     ): RecipeDto
 }

@@ -21,6 +21,7 @@ import com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_up.SignUpScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultBottomNavigation
 import com.ridhaaf.nomnomdelish.feature.presentation.favorite.FavoriteScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.home.HomeScreen
+import com.ridhaaf.nomnomdelish.feature.presentation.home.search.SearchScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.profile.ProfileScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.routes.Routes
 import com.ridhaaf.nomnomdelish.ui.theme.NomNomDelishTheme
@@ -76,6 +77,12 @@ fun App(modifier: Modifier = Modifier) {
             }
             composable(Routes.HOME) {
                 HomeScreen(
+                    modifier = modifier,
+                    navController = navController,
+                )
+            }
+            composable(Routes.SEARCH) {
+                SearchScreen(
                     modifier = modifier,
                     navController = navController,
                 )
