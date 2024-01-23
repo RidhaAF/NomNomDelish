@@ -71,10 +71,10 @@ fun HomeScreen(
             .verticalScroll(verticalScrollState),
     ) {
         Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            modifier = modifier.fillMaxSize(),
         ) {
+            IntroSection()
+            DefaultSpacer()
             RandomRecipeCard(state)
         }
         PullRefreshIndicator(
@@ -88,74 +88,123 @@ fun HomeScreen(
 }
 
 @Composable
+fun IntroSection() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(
+                RoundedCornerShape(
+                    bottomEnd = 16.dp,
+                    bottomStart = 16.dp,
+                ),
+            ),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.onSecondary)
+                .padding(16.dp),
+        ) {
+            Text(
+                text = "Welcome! 👋🏻",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineSmall,
+            )
+            DefaultSpacer(size = 4)
+            Text(
+                text = "Find your favorite recipes here!",
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}
+
+@Composable
 fun RandomRecipeCard(state: HomeState) {
     val recipe = state.randomRecipe
-    val meal = recipe?.meals?.first()
+    val meal = recipe?.meals?.firstOrNull()
 
-    if (state.isRandomRecipeLoading) {
-        CircularProgressIndicator(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .wrapContentSize(Alignment.Center),
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+    ) {
+        Text(
+            text = "Random Recipe",
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleLarge,
         )
-        return
-    }
-    if (recipe != null) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(
-                    min = 280.dp,
-                    max = 320.dp,
-                )
-                .background(MaterialTheme.colorScheme.surface)
-                .clip(RoundedCornerShape(16.dp))
-                .shadow(4.dp),
-        ) {
-            Column(
+        DefaultSpacer(size = 8)
+        if (state.isRandomRecipeLoading) {
+            CircularProgressIndicator(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-            ) {
-                AsyncImage(
-                    model = meal?.strMealThumb,
-                    contentDescription = meal?.strMeal,
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .wrapContentSize(Alignment.Center),
+            )
+        } else {
+            if (recipe != null) {
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.Crop,
-                )
-                DefaultSpacer()
-                Text(
-                    text = meal?.strMeal ?: "",
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    fontWeight = FontWeight.Bold,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    style = MaterialTheme.typography.titleLarge,
-                )
-                DefaultSpacer(size = 8)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                        .heightIn(
+                            min = 280.dp,
+                            max = 320.dp,
+                        )
+                        .background(MaterialTheme.colorScheme.surface)
+                        .clip(RoundedCornerShape(16.dp))
+                        .shadow(4.dp),
                 ) {
-                    Text(
-                        text = "🍽️ ${meal?.strCategory}",
-                        color = Color.LightGray,
-                        fontWeight = FontWeight.SemiBold,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Text(
-                        text = "📍${meal?.strArea}",
-                        color = Color.LightGray,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                    ) {
+                        AsyncImage(
+                            model = meal?.strMealThumb,
+                            contentDescription = meal?.strMeal,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .clip(RoundedCornerShape(16.dp)),
+                            contentScale = ContentScale.Crop,
+                        )
+                        DefaultSpacer()
+                        Text(
+                            text = meal?.strMeal ?: "",
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            fontWeight = FontWeight.Bold,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+                        DefaultSpacer(size = 8)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text(
+                                text = "🍽️ ${meal?.strCategory}",
+                                color = Color.LightGray,
+                                fontWeight = FontWeight.SemiBold,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                            Text(
+                                text = "📍${meal?.strArea}",
+                                color = Color.LightGray,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    }
                 }
+            } else {
+                Text(
+                    text = "No recipe found!",
+                    modifier = Modifier.padding(16.dp),
+                )
             }
         }
-    } else {
-        Text(text = "No recipe found!")
     }
 }
