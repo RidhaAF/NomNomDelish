@@ -68,7 +68,7 @@ fun SearchScreen(
 }
 
 @Composable
-fun SearchTextField(viewModel: SearchViewModel) {
+private fun SearchTextField(viewModel: SearchViewModel) {
     val focusRequester = remember { FocusRequester() }
 
     DefaultTextField(
@@ -90,7 +90,7 @@ fun SearchTextField(viewModel: SearchViewModel) {
 }
 
 @Composable
-fun SearchResults(
+private fun SearchResults(
     viewModel: SearchViewModel,
     state: SearchState,
     navController: NavController?,
@@ -110,7 +110,7 @@ fun SearchResults(
 }
 
 @Composable
-fun SearchResultsContent(
+private fun SearchResultsContent(
     state: SearchState,
     navController: NavController?,
 ) {
