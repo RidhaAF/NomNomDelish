@@ -1,4 +1,4 @@
-package com.ridhaaf.nomnomdelish.feature.presentation.home.search
+package com.ridhaaf.nomnomdelish.feature.presentation.search
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
