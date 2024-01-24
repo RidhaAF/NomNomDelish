@@ -1,29 +1,28 @@
 package com.ridhaaf.nomnomdelish.feature.presentation.home.search
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.ridhaaf.nomnomdelish.feature.presentation.components.Default404
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultBackButton
+import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultProgressIndicator
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultSpacer
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultTextField
+import com.ridhaaf.nomnomdelish.feature.presentation.components.RecipeCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,14 +40,7 @@ fun SearchScreen(
                     Text(text = "Search")
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        navController?.popBackStack()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Rounded.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
+                    DefaultBackButton(navController)
                 },
             )
         },
@@ -61,7 +53,10 @@ fun SearchScreen(
             ) {
                 SearchTextField(viewModel)
                 DefaultSpacer()
-                SearchResults(state)
+                SearchResults(
+                    viewModel = viewModel,
+                    state = state,
+                )
             }
         }
     }
@@ -83,28 +78,41 @@ fun SearchTextField(viewModel: SearchViewModel) {
 }
 
 @Composable
-fun SearchResults(state: SearchState) {
+fun SearchResults(viewModel: SearchViewModel, state: SearchState) {
+    if (viewModel.searchRecipes.value.isEmpty()) {
+        Default404(
+            icon = Icons.Rounded.Search,
+            title = "Search for recipes",
+            subtitle = "Find your favorite recipes",
+        )
+    } else {
+        SearchResultsContent(state)
+    }
+}
+
+@Composable
+fun SearchResultsContent(state: SearchState) {
     val recipes = state.searchRecipes?.meals.orEmpty()
 
     if (state.isSearchRecipesLoading) {
-        CircularProgressIndicator(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .wrapContentSize(Alignment.Center),
-        )
+        DefaultProgressIndicator()
     } else {
         if (recipes.isNotEmpty()) {
             LazyColumn(
-                modifier = Modifier.padding(top = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(recipes.size) { index ->
-                    val recipe = recipes[index]
-                    Text(text = recipe.strMeal ?: "")
+                    val meal = recipes[index]
+
+                    RecipeCard(
+                        meal = meal,
+                        height = 96,
+                        horizontal = true,
+                    )
                 }
             }
         } else {
-            Text(text = "No results found")
+            Default404()
         }
     }
 }
