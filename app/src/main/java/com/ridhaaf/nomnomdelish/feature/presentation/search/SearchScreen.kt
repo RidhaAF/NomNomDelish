@@ -13,7 +13,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -65,7 +69,10 @@ fun SearchScreen(
 
 @Composable
 fun SearchTextField(viewModel: SearchViewModel) {
+    val focusRequester = remember { FocusRequester() }
+
     DefaultTextField(
+        modifier = Modifier.focusRequester(focusRequester),
         value = viewModel.searchRecipes.value,
         onValueChange = viewModel::searchRecipes,
         placeholder = "Search recipes...",
@@ -76,6 +83,10 @@ fun SearchTextField(viewModel: SearchViewModel) {
             )
         },
     )
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 }
 
 @Composable
