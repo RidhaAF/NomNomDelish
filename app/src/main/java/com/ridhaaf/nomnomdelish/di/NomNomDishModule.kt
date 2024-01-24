@@ -73,10 +73,12 @@ object NomNomDishModule {
     fun provideRecipeRepository(
         api: RecipeApi,
         dotenv: Dotenv,
+        auth: FirebaseAuth,
+        firestore: FirebaseFirestore,
     ): RecipeRepository {
         val apiKey = dotenv["API_KEY"]
 
-        return RecipeRepositoryImpl(api, apiKey)
+        return RecipeRepositoryImpl(api, apiKey, auth, firestore)
     }
 
     @Provides

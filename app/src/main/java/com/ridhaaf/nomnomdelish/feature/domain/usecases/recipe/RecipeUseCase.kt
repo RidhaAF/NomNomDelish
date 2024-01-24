@@ -17,4 +17,16 @@ class RecipeUseCase(private val repository: RecipeRepository) {
     fun searchRecipe(query: String): Flow<Resource<Recipe>> {
         return repository.searchRecipe(query)
     }
+
+    suspend fun addFavoriteRecipe(id: String) {
+        repository.addFavoriteRecipe(id)
+    }
+
+    suspend fun removeFavoriteRecipe(id: String) {
+        repository.removeFavoriteRecipe(id)
+    }
+
+    fun getFavoriteRecipes(): Flow<Resource<List<String>>> {
+        return repository.getFavoriteRecipes()
+    }
 }

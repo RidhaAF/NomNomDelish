@@ -9,15 +9,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,10 +47,17 @@ fun RecipeScreen(
 ) {
     val state = viewModel.state.value
     val meal = state.recipe?.meals?.firstOrNull()
+    val recipesId = state.favoriteRecipes?.contains(id) ?: false
+    var isFavoriteRecipe by remember { mutableStateOf(recipesId) }
     val scrollState = rememberScrollState()
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.getRecipe(id)
+        viewModel.onEvent(RecipeEvent.GetRecipeEvent(id))
+        viewModel.onEvent(RecipeEvent.GetFavoriteRecipesEvent)
+    }
+
+    LaunchedEffect(key1 = state.favoriteRecipes) {
+        isFavoriteRecipe = state.favoriteRecipes?.contains(id) ?: false
     }
 
     Scaffold(
@@ -61,9 +74,15 @@ fun RecipeScreen(
                     DefaultBackButton(navController)
                 },
                 actions = {
-                    Icon(
-                        imageVector = Icons.Rounded.FavoriteBorder,
-                        contentDescription = "Add to favorite",
+                    FavoriteButton(
+                        isFavoriteRecipe,
+                        onClick = {
+                            viewModel.onEvent(
+                                if (isFavoriteRecipe) RecipeEvent.OnRemoveFromFavoriteClick(id)
+                                else RecipeEvent.OnAddToFavoriteClick(id)
+                            )
+                            isFavoriteRecipe = !isFavoriteRecipe
+                        },
                     )
                 },
             )
@@ -98,6 +117,24 @@ fun RecipeScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun FavoriteButton(
+    isFav: Boolean,
+    onClick: () -> Unit = {},
+) {
+    val icon = if (isFav) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder
+    val contentDesc = if (isFav) "Remove from favorite" else "Add to favorite"
+
+    IconButton(
+        onClick = onClick,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDesc,
+        )
     }
 }
 
