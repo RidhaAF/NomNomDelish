@@ -21,9 +21,10 @@ import com.ridhaaf.nomnomdelish.feature.presentation.auth.sign_up.SignUpScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultBottomNavigation
 import com.ridhaaf.nomnomdelish.feature.presentation.favorite.FavoriteScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.home.HomeScreen
-import com.ridhaaf.nomnomdelish.feature.presentation.search.SearchScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.profile.ProfileScreen
+import com.ridhaaf.nomnomdelish.feature.presentation.recipe.RecipeScreen
 import com.ridhaaf.nomnomdelish.feature.presentation.routes.Routes
+import com.ridhaaf.nomnomdelish.feature.presentation.search.SearchScreen
 import com.ridhaaf.nomnomdelish.ui.theme.NomNomDelishTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -84,6 +85,15 @@ fun App(modifier: Modifier = Modifier) {
             composable(Routes.SEARCH) {
                 SearchScreen(
                     modifier = modifier,
+                    navController = navController,
+                )
+            }
+            composable(Routes.RECIPE) { navBackStack ->
+                val id = navBackStack.arguments?.getString("meal")
+
+                RecipeScreen(
+                    modifier = modifier,
+                    id = id ?: "0",
                     navController = navController,
                 )
             }

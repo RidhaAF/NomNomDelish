@@ -73,7 +73,10 @@ fun HomeScreen(
             IntroSection()
             DefaultSpacer()
             SearchSection(navController)
-            RandomRecipeCard(state)
+            RandomRecipeCard(
+                state = state,
+                navController = navController,
+            )
         }
         PullRefreshIndicator(
             refreshing = refreshing,
@@ -143,7 +146,10 @@ fun SearchSection(navController: NavController?) {
 }
 
 @Composable
-fun RandomRecipeCard(state: HomeState) {
+fun RandomRecipeCard(
+    state: HomeState,
+    navController: NavController?,
+) {
     val recipe = state.randomRecipe
     val meal = recipe?.meals?.firstOrNull()
 
@@ -163,7 +169,12 @@ fun RandomRecipeCard(state: HomeState) {
             DefaultProgressIndicator()
         } else {
             if (recipe != null) {
-                RecipeCard(meal = meal)
+                RecipeCard(
+                    meal = meal,
+                    onClick = {
+                        navController?.navigate("recipe/${meal?.idMeal}")
+                    },
+                )
             } else {
                 Default404()
             }

@@ -11,10 +11,10 @@ interface RecipeApi {
         @Path("apiKey") apiKey: String,
     ): RecipeDto
 
-    @GET("{apiKey}/lookup.php?i={id}")
+    @GET("{apiKey}/lookup.php")
     suspend fun getRecipeById(
         @Path("apiKey") apiKey: String,
-        @Path("id") id: String,
+        @Query("i") id: String,
     ): RecipeDto
 
     @GET("{apiKey}/search.php")

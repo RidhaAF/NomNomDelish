@@ -125,7 +125,7 @@ fun RecipeImage(
 }
 
 @Composable
-fun RecipeTitle(meal: Meal?) {
+private fun RecipeTitle(meal: Meal?) {
     Text(
         text = meal?.strMeal ?: "",
         color = MaterialTheme.colorScheme.onSecondaryContainer,

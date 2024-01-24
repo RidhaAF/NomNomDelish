@@ -56,6 +56,7 @@ fun SearchScreen(
                 SearchResults(
                     viewModel = viewModel,
                     state = state,
+                    navController = navController,
                 )
             }
         }
@@ -78,7 +79,11 @@ fun SearchTextField(viewModel: SearchViewModel) {
 }
 
 @Composable
-fun SearchResults(viewModel: SearchViewModel, state: SearchState) {
+fun SearchResults(
+    viewModel: SearchViewModel,
+    state: SearchState,
+    navController: NavController?,
+) {
     if (viewModel.searchRecipes.value.isEmpty()) {
         Default404(
             icon = Icons.Rounded.Search,
@@ -86,12 +91,18 @@ fun SearchResults(viewModel: SearchViewModel, state: SearchState) {
             subtitle = "Find your favorite recipes",
         )
     } else {
-        SearchResultsContent(state)
+        SearchResultsContent(
+            state = state,
+            navController = navController,
+        )
     }
 }
 
 @Composable
-fun SearchResultsContent(state: SearchState) {
+fun SearchResultsContent(
+    state: SearchState,
+    navController: NavController?,
+) {
     val recipes = state.searchRecipes?.meals.orEmpty()
 
     if (state.isSearchRecipesLoading) {
@@ -108,6 +119,9 @@ fun SearchResultsContent(state: SearchState) {
                         meal = meal,
                         height = 96,
                         horizontal = true,
+                        onClick = {
+                            navController?.navigate("recipe/${meal.idMeal}")
+                        },
                     )
                 }
             }
