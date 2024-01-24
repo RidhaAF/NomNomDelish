@@ -3,7 +3,7 @@ package com.ridhaaf.nomnomdelish.feature.domain.usecases.auth
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.ridhaaf.nomnomdelish.core.utils.Resource
-import com.ridhaaf.nomnomdelish.feature.data.models.User
+import com.ridhaaf.nomnomdelish.feature.data.models.auth.User
 import com.ridhaaf.nomnomdelish.feature.domain.repositories.auth.AuthRepository
 import kotlinx.coroutines.flow.Flow
 
