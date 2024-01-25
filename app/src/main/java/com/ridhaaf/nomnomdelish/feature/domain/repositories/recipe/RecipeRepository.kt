@@ -10,4 +10,10 @@ interface RecipeRepository {
     fun getRecipeById(id: String): Flow<Resource<Recipe>>
 
     fun searchRecipe(query: String): Flow<Resource<Recipe>>
+
+    suspend fun addFavoriteRecipe(id: String)
+
+    suspend fun removeFavoriteRecipe(id: String)
+
+    fun getFavoriteRecipes(): Flow<Resource<List<String>>>
 }

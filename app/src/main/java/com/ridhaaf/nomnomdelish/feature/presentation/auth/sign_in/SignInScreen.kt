@@ -71,7 +71,7 @@ fun SignInScreen(
                 val credentials = GoogleAuthProvider.getCredential(result.idToken, null)
                 viewModel.signInWithGoogle(credentials)
             } catch (it: ApiException) {
-                println(it)
+                throw it
             }
         }
 
@@ -219,7 +219,9 @@ fun GoogleSignInButton(
 
             val googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
 
-            launcher.launch(googleSignInClient.signInIntent)
+            googleSignInClient.signOut().addOnCompleteListener {
+                launcher.launch(googleSignInClient.signInIntent)
+            }
         },
         text = text,
     )

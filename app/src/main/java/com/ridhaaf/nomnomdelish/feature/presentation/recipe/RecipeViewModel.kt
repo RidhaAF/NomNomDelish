@@ -16,7 +16,7 @@ class RecipeViewModel @Inject constructor(private val useCase: RecipeUseCase) : 
     private val _state = mutableStateOf(RecipeState())
     val state: State<RecipeState> = _state
 
-    fun getRecipe(id: String) {
+    private fun getRecipe(id: String) {
         viewModelScope.launch {
             useCase.getRecipeById(id).collectLatest { result ->
                 when (result) {
@@ -42,6 +42,68 @@ class RecipeViewModel @Inject constructor(private val useCase: RecipeUseCase) : 
                         )
                     }
                 }
+            }
+        }
+    }
+
+    private fun getFavoriteRecipes() {
+        viewModelScope.launch {
+            useCase.getFavoriteRecipes().collectLatest { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = state.value.copy(
+                            isFavoriteRecipesLoading = true,
+                            favoriteRecipes = emptyList(),
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = state.value.copy(
+                            isFavoriteRecipesLoading = false,
+                            favoriteRecipes = result.data,
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = state.value.copy(
+                            isFavoriteRecipesLoading = false,
+                            favoriteRecipes = emptyList(),
+                            favoriteRecipesError = result.message ?: "Oops, something went wrong!",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun addFavoriteRecipe(id: String) {
+        viewModelScope.launch {
+            useCase.addFavoriteRecipe(id)
+        }
+    }
+
+    private fun removeFavoriteRecipe(id: String) {
+        viewModelScope.launch {
+            useCase.removeFavoriteRecipe(id)
+        }
+    }
+
+    fun onEvent(event: RecipeEvent) {
+        when (event) {
+            is RecipeEvent.GetRecipeEvent -> {
+                getRecipe(event.id)
+            }
+
+            is RecipeEvent.GetFavoriteRecipesEvent -> {
+                getFavoriteRecipes()
+            }
+
+            is RecipeEvent.OnAddToFavoriteClick -> {
+                addFavoriteRecipe(event.id)
+            }
+
+            is RecipeEvent.OnRemoveFromFavoriteClick -> {
+                removeFavoriteRecipe(event.id)
             }
         }
     }
