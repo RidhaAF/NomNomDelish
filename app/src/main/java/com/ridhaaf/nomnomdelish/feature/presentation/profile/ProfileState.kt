@@ -1,6 +1,6 @@
 package com.ridhaaf.nomnomdelish.feature.presentation.profile
 
-import com.ridhaaf.nomnomdelish.feature.data.models.User
+import com.ridhaaf.nomnomdelish.feature.data.models.auth.User
 
 data class ProfileState(
     val user: User = User(),

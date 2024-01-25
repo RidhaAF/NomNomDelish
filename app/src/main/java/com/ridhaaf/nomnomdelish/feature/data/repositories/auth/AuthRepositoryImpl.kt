@@ -6,7 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ridhaaf.nomnomdelish.core.utils.Resource
-import com.ridhaaf.nomnomdelish.feature.data.models.User
+import com.ridhaaf.nomnomdelish.feature.data.models.auth.User
 import com.ridhaaf.nomnomdelish.feature.domain.repositories.auth.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

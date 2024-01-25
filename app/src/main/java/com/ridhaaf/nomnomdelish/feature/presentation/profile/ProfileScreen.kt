@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.ridhaaf.nomnomdelish.feature.data.models.User
+import com.ridhaaf.nomnomdelish.feature.data.models.auth.User
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultButton
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultPhotoProfile
 import com.ridhaaf.nomnomdelish.feature.presentation.components.DefaultSpacer
