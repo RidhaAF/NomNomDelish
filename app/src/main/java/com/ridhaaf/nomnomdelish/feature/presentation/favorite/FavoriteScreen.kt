@@ -12,6 +12,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -37,15 +38,19 @@ fun FavoriteScreen(
         },
     )
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.refresh()
+    }
+
     Box(
-        modifier = modifier
-            .pullRefresh(pullRefreshState)
-            .padding(16.dp),
+        modifier = modifier.pullRefresh(pullRefreshState),
     ) {
         Column(
-            modifier = modifier.fillMaxSize(),
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
         ) {
-            FavoriteRecipeContent(
+            FavoriteRecipesContent(
                 state = state,
                 navController = navController,
             )
@@ -61,11 +66,11 @@ fun FavoriteScreen(
 }
 
 @Composable
-private fun FavoriteRecipeContent(
+private fun FavoriteRecipesContent(
     state: FavoriteState,
     navController: NavController?,
 ) {
-    val recipes = state.recipes?.meals.orEmpty()
+    val recipes = state.recipes.orEmpty()
 
     if (state.isLoading) {
         DefaultProgressIndicator()
@@ -75,7 +80,7 @@ private fun FavoriteRecipeContent(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(recipes.size) { index ->
-                    val meal = recipes[index]
+                    val meal = recipes[index].meals.first()
 
                     RecipeCard(
                         meal = meal,
@@ -88,7 +93,10 @@ private fun FavoriteRecipeContent(
                 }
             }
         } else {
-            Default404()
+            Default404(
+                title = "No Favorite Recipes",
+                subtitle = "Start add some recipes to your favorites!",
+            )
         }
     }
 }
