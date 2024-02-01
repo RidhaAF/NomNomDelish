@@ -27,6 +27,8 @@ class FavoriteViewModel @Inject constructor(private val useCase: RecipeUseCase) 
     }
 
     private fun getFavoriteRecipes() {
+        resetState()
+
         viewModelScope.launch {
             useCase.getFavoriteRecipes().collectLatest { result ->
                 when (result) {
@@ -93,5 +95,9 @@ class FavoriteViewModel @Inject constructor(private val useCase: RecipeUseCase) 
                 }
             }
         }
+    }
+
+    private fun resetState() {
+        _state.value = FavoriteState()
     }
 }

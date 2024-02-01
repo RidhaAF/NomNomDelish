@@ -128,6 +128,8 @@ class RecipeRepositoryImpl @Inject constructor(
     }
 
     private fun getUserFavoriteRecipes(): Task<QuerySnapshot> {
-        return favoritesCollection().whereEqualTo("userId", getUserId()).limit(1).get()
+        val currentUserId = getUserId()
+
+        return favoritesCollection().whereEqualTo("userId", currentUserId).limit(1).get()
     }
 }
